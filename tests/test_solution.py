@@ -46,3 +46,45 @@ def test_non_dict_request_raises():
         is_allocation_feasible(resources, requests)
 
 """TODO: Add at least 5 additional test cases to test your implementation."""
+def test_exact_capacity_match():
+    # Exact Capacity Match
+    # Constraint: total demand == capacity
+    # Reason: boundary case should still be feasible
+    resources = {'cpu': 10, 'mem': 20}
+    requests = [{'cpu': 4, 'mem': 5}, {'cpu': 6, 'mem': 15}]
+    assert is_allocation_feasible(resources, requests) is True
+
+def test_negative_request_amount():
+    # Negative Request Amount
+    # Constraint: resource requests must be non-negative
+    # Reason: invalid input should raise error
+    resources = {'cpu': 10}
+    requests = [{'cpu': 5}, {'cpu': -2}]
+    with pytest.raises(ValueError):
+        is_allocation_feasible(resources, requests)
+        
+def test_negative_resource_capacity():
+    # Negative Resource Capacity
+    # Constraint: available resources must be non-negative
+    # Reason: invalid system configuration
+    resources = {'cpu': -4}
+    requests = [{'cpu': 1}]
+    with pytest.raises(ValueError):
+        is_allocation_feasible(resources, requests)
+
+def test_empty_requests():
+    # Empty Requests
+    # Constraint: no demand means always feasible
+    # Reason: edge case where nothing is requested
+    resources = {'cpu': 5, 'mem': 10}
+    requests = []
+    assert is_allocation_feasible(resources, requests) is True
+
+def test_unused_resource_in_capacity():
+    # Unused Resource in Capacity
+    # Constraint: resources can exist without being requested
+    # Reason: should still be feasible if unused capacity exists
+    resources = {'cpu': 10, 'mem': 20, 'gpu': 2}
+    requests = [{'cpu': 3}, {'mem': 5}]
+    assert is_allocation_feasible(resources, requests) is True
+
