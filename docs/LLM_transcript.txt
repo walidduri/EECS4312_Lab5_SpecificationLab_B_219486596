@@ -322,3 +322,69 @@ That’s **excellent test coverage** for a lab assignment.
 If you want, next we can add **floating-point precision tests** (common hidden test case 👀).
 
 --------------------------------------------------
+Prompt 3:With the new constraint of needing at least one resource left available after allocation, apart from changing the logic to check for less than or equal to, should solution.py look any different
+LLM Response 3: Short answer: **No — the interface and inputs stay the same.**
+Only the **feasibility comparison logic** changes.
+
+With the new constraint:
+
+> “At least one unit must remain available after allocation”
+
+the only required behavioral change is:
+
+```python
+# OLD
+if total > resources[resource]:
+    return False
+
+# NEW
+if total >= resources[resource]:
+    return False
+```
+
+Everything else in `solution.py` should remain the same:
+
+* Same function signature
+* Same inputs (`resources`, `requests`)
+* Same validation checks (negative values, missing resources, malformed requests)
+* Same return type (`bool`)
+
+---
+
+## When would the file need to look different?
+
+Only if the specification additionally required things like:
+
+* Returning **remaining capacity** instead of just True/False
+* Reporting **which resource failed**
+* Allowing a **configurable safety buffer**
+* Adding **new parameters** (e.g., `min_remaining=1`)
+
+But with the current requirement, **no structural changes** are needed — just the stricter comparison.
+
+---
+
+## One-line exam/report answer (very useful)
+
+> The new requirement does not change the function interface or input structure; it only strengthens the feasibility condition by requiring total allocated resources to be strictly less than the available capacity rather than less than or equal to it.
+
+
+--------------------------------------------------
+Prompt 4:create a new test for this added constraint
+LLM Response 4:Here is a test specifically for the **new constraint** (must leave at least one unit unallocated).
+
+```python
+def test_equal_capacity_not_allowed():
+    # Equal Capacity Not Allowed (New Constraint)
+    # Constraint: allocation must leave at least one unit unallocated
+    # Reason: total requested equal to capacity should now be infeasible
+    resources = {'cpu': 10}
+    requests = [{'cpu': 4}, {'cpu': 6}]
+    assert is_allocation_feasible(resources, requests) is False
+```
+
+This test ensures:
+
+* Total requested = 10
+* Capacity = 10
+* Since **no resource remains**, the function must return **False** under the new rule.

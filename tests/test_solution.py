@@ -87,4 +87,11 @@ def test_unused_resource_in_capacity():
     resources = {'cpu': 10, 'mem': 20, 'gpu': 2}
     requests = [{'cpu': 3}, {'mem': 5}]
     assert is_allocation_feasible(resources, requests) is True
+def test_equal_capacity_not_allowed():
+    # Equal Capacity Not Allowed (New Constraint)
+    # Constraint: allocation must leave at least one unit unallocated
+    # Reason: total requested equal to capacity should now be infeasible
+    resources = {'cpu': 10}
+    requests = [{'cpu': 4}, {'cpu': 6}]
+    assert is_allocation_feasible(resources, requests) is False
 

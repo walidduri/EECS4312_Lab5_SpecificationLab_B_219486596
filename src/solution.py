@@ -51,7 +51,7 @@ def is_allocation_feasible(
             return False
         if total < 0:
             return False
-        if total > resources[resource]:
+        if total >= resources[resource]:
             return False
         
     return True
